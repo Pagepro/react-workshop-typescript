@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {
   BrowserRouter,
   Route,
@@ -9,24 +8,32 @@ import Home from './Home'
 import Setup from './Setup'
 import Game from './Game'
 
-const defaultState = {
+type IProps = {}
+
+interface IState {
+  nick: string
+  difficulty: string | null
+  gameStarted: boolean
+}
+
+const defaultState: IState = {
   nick: '',
   difficulty: null,
   gameStarted: false
 }
 
-class App extends React.Component {
-  constructor (props) {
-    super(props)
+class App extends React.Component<IProps, IState> {
+  state = defaultState
 
-    this.state = defaultState
+  constructor (props: IProps) {
+    super(props)
 
     this.resetGame = this.resetGame.bind(this)
     this.setupApp = this.setupApp.bind(this)
     this.setGameStarted = this.setGameStarted.bind(this)
   }
 
-  setupApp (nick, difficulty, callback) {
+  setupApp (nick: string, difficulty: string, callback: (() => void | undefined)) {
     this.setState({
       nick,
       difficulty
@@ -39,7 +46,7 @@ class App extends React.Component {
     })
   }
 
-  resetGame (callback) {
+  resetGame (callback: (() => void | undefined)) {
     this.setState({ ...defaultState }, callback)
   }
 
@@ -71,7 +78,7 @@ class App extends React.Component {
           />
           <Route
             exact path='/game'
-            component={({ history }) =>
+            render={({ history }) =>
               <Game
                 history={history}
                 appSettings={this.state}
@@ -83,10 +90,6 @@ class App extends React.Component {
       </BrowserRouter>
     )
   }
-}
-
-App.propTypes = {
-  history: PropTypes.object
 }
 
 export default App
