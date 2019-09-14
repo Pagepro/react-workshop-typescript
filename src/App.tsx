@@ -33,7 +33,7 @@ class App extends React.Component<IProps, IState> {
     this.setGameStarted = this.setGameStarted.bind(this)
   }
 
-  setupApp (nick: string, difficulty: string, callback: (() => void | undefined)) {
+  setupApp (nick: string, difficulty: string, callback?: () => void) {
     this.setState({
       nick,
       difficulty
@@ -46,7 +46,7 @@ class App extends React.Component<IProps, IState> {
     })
   }
 
-  resetGame (callback: (() => void | undefined)) {
+  resetGame (callback?: () => void) {
     this.setState({ ...defaultState }, callback)
   }
 

@@ -1,16 +1,30 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { History } from 'history'
 
-class Setup extends Component {
-  constructor (props) {
+interface IProps {
+  setupApp: (nick: string, difficulty: string, callback?: () => void) => void
+  gameStarted: boolean
+  history: History
+}
+
+interface IState {
+  name: string
+  difficulty: string
+}
+
+class Setup extends React.Component<IProps, IState> {
+  state = {
+    name: '',
+    difficulty: ''
+  }
+
+  nickNameRef = React.createRef<HTMLInputElement>()
+  difficultyRef = React.createRef<HTMLSelectElement>()
+
+  constructor (props: IProps) {
     super(props)
 
     this.onSubmit = this.onSubmit.bind(this)
-
-    this.state = {
-      name: '',
-      difficulty: ''
-    }
   }
 
   componentDidMount () {
@@ -24,30 +38,35 @@ class Setup extends Component {
     }
   }
 
-  onSubmit (e) {
+  onSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+
+    if (!this.difficultyRef.current || !this.nickNameRef.current) return
 
     const {
       props: {
         setupApp,
         history
       },
-      refs: {
-        nickName: {
-          value: nickNameVal
-        },
-        difficulty: {
-          value: difficultyVal
+      nickNameRef: {
+        current: {
+          value: nickName
+        }
+      },
+      difficultyRef: {
+        current: {
+          value: difficulty
         }
       }
     } = this
 
-    if (!nickNameVal.length) {
+    if (!nickName.length) {
       window.alert('Please enter the name :)')
+
       return
     }
 
-    setupApp(nickNameVal, difficultyVal, () => {
+    setupApp(nickName, difficulty, () => {
       history.push('/game')
     })
   }
@@ -68,7 +87,7 @@ class Setup extends Component {
           <input
             className='f-start__control'
             type='text'
-            ref='nickName'
+            ref={this.nickNameRef}
             id='nickname'
             autoFocus
           />
@@ -79,7 +98,7 @@ class Setup extends Component {
             Difficulty:
           </label>
           <select
-            ref='difficulty'
+            ref={this.difficultyRef}
             id='difficulty'
             className='f-start__control'
           >
@@ -109,12 +128,6 @@ class Setup extends Component {
       </div>
     )
   }
-}
-
-Setup.propTypes = {
-  setupApp: PropTypes.func,
-  gameStarted: PropTypes.bool,
-  history: PropTypes.object
 }
 
 export default Setup
