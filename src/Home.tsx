@@ -1,25 +1,24 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FunctionComponent } from 'react'
 import {
   Link
 } from 'react-router-dom'
 
-const Home = props => {
+interface IProps {
+  setGameStarted: () => void
+}
+
+const Home: FunctionComponent<IProps> = ({ setGameStarted }) => {
   return (
     <div className='l-centered'>
       <Link
         className='c-start-link'
         to='/setup'
-        onClick={props.setGameStarted}
+        onClick={setGameStarted}
       >
         Start
       </Link>
     </div>
   )
-}
-
-Home.propTypes = {
-  setGameStarted: PropTypes.func
 }
 
 export default Home
