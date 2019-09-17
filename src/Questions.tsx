@@ -1,22 +1,29 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { IAnswer } from './Game'
 
-class Questions extends React.Component {
-  constructor (props) {
+interface IProps {
+  answers: IAnswer[]
+  question: string
+  onSelect: (answer: IAnswer) => () => void
+}
+
+class Questions extends React.Component<IProps> {
+  constructor (props: IProps) {
     super(props)
 
     this.renderItem = this.renderItem.bind(this)
   }
 
-  renderItem (item, index) {
+  renderItem (item: IAnswer, index: number) {
     const {
       onSelect
     } = this.props
+
     return (
       <li
         key={`${index}-answer`}
         className={`c-question ${item.disabled ? 'is-disabled' : ''}`}
-        onClick={item.disabled ? null : onSelect(item)}
+        onClick={item.disabled ? undefined : onSelect(item)}
       >
         <span className='c-question__label'>
           {String.fromCharCode(65 + index)}: {item.text}
@@ -42,14 +49,6 @@ class Questions extends React.Component {
       </div>
     )
   }
-}
-
-Questions.propTypes = {
-  answers: PropTypes.array,
-  question: PropTypes.string,
-  answer: PropTypes.object,
-  onSelect: PropTypes.func,
-  correctAnswer: PropTypes.string
 }
 
 export default Questions

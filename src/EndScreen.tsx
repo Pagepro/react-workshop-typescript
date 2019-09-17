@@ -1,10 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { FunctionComponent } from 'react'
 import {
   getGuaranteedReward
 } from './helpers'
 
-const EndScreen = props => {
+interface IProps {
+  hasWon: boolean
+  currentQuestionNumber: number
+  resetGame: () => void
+}
+
+const EndScreen: FunctionComponent<IProps> = props => {
   const {
     hasWon,
     currentQuestionNumber,
@@ -28,12 +33,6 @@ const EndScreen = props => {
       </button>
     </div>
   )
-}
-
-EndScreen.propTypes = {
-  hasWon: PropTypes.bool,
-  currentQuestionNumber: PropTypes.number,
-  resetGame: PropTypes.func
 }
 
 export default EndScreen

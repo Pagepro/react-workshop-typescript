@@ -10,7 +10,7 @@ import SidePanel from './SidePanel'
 import EndScreen from './EndScreen'
 import { IAppSettings } from './App'
 
-interface IAnswer {
+export interface IAnswer {
   text: string
   disabled: boolean
 }
@@ -187,7 +187,6 @@ class Game extends React.Component<IProps, IState> {
               <Questions
                 question={question}
                 answers={answers}
-                correctAnswer={correctAnswer}
                 onSelect={this.setCurrentAnswer}
               />
             </div>
