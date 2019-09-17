@@ -1,31 +1,62 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { History } from 'history'
+import { shuffle } from 'lodash'
 import {
   fetchQuestions
 } from './helpers'
 import Questions from './Questions'
 import Background from './Background'
 import SidePanel from './SidePanel'
-import { shuffle } from 'lodash'
 import EndScreen from './EndScreen'
+import { IAppSettings } from './App'
 
-class Game extends Component {
-  constructor (props) {
+// Types for question and answer here for now
+interface IAnswer {
+  text: string
+  disabled: boolean
+}
+
+interface IQuestion {
+  question: string
+  correctAnswer: string
+  incorrectAnswers: string[]
+}
+
+interface IProps {
+  history: History
+  appSettings: IAppSettings
+  resetGame: (callback?: () => void) => void
+}
+
+interface IState {
+  questions: IQuestion[]
+  currentQuestion: IQuestion | null
+  answers: IAnswer[]
+  currentQuestionNumber: number
+  answer: IAnswer | null
+  isGameFinished: boolean
+  hasWon: boolean
+}
+
+class Game extends React.Component<IProps, IState> {
+  constructor (props: IProps) {
     super(props)
-
-    this.state = {
-      questions: [],
-      currentQuestion: {},
-      answers: [],
-      currentQuestionNumber: 0,
-      answer: {}
-    }
 
     this.fetchQuestions = this.fetchQuestions.bind(this)
     this.generateQuestion = this.generateQuestion.bind(this)
     this.setCurrentAnswer = this.setCurrentAnswer.bind(this)
     this.resetGame = this.resetGame.bind(this)
     this.setCurrentQuestionAnswers = this.setCurrentQuestionAnswers.bind(this)
+
+    this.state = {
+      questions: [],
+      currentQuestion: null,
+      answers: [],
+      currentQuestionNumber: 0,
+      answer: null,
+      isGameFinished: false,
+      hasWon: false
+    }
   }
 
   componentDidMount () {
@@ -63,6 +94,9 @@ class Game extends Component {
 
   generateQuestion () {
     const currentQuestion = this.state.questions[this.state.currentQuestionNumber]
+
+    if (!currentQuestion) return
+
     const {
       correctAnswer,
       incorrectAnswers
@@ -80,7 +114,7 @@ class Game extends Component {
     })
   }
 
-  setCurrentAnswer (answer) {
+  setCurrentAnswer (answer: IAnswer) {
     return () => {
       this.setState({ answer }, this.confirmCheckedAnswer)
     }
@@ -89,21 +123,19 @@ class Game extends Component {
   confirmCheckedAnswer () {
     const {
       answer,
-      currentQuestion: {
-        correctAnswer
-      },
+      currentQuestion,
       currentQuestionNumber
     } = this.state
 
-    if (this.state.answer === '') {
+    if (!answer || !currentQuestion) {
       return
     }
 
-    if (answer.text === correctAnswer) {
+    if (answer.text === currentQuestion.correctAnswer) {
       if (currentQuestionNumber !== 11) {
         this.setState(prevState => ({
           currentQuestionNumber: prevState.currentQuestionNumber + 1,
-          answer: {}
+          answer: null
         }), this.generateQuestion)
       } else {
         this.setState({
@@ -119,7 +151,7 @@ class Game extends Component {
     }
   }
 
-  setCurrentQuestionAnswers (answers) {
+  setCurrentQuestionAnswers (answers: IAnswer[]) {
     this.setState({
       answers: [
         ...answers
@@ -129,15 +161,19 @@ class Game extends Component {
 
   render () {
     const {
-      currentQuestion: {
-        question,
-        correctAnswer
-      },
+      currentQuestion,
       answers,
       isGameFinished,
       hasWon,
       currentQuestionNumber
     } = this.state
+
+    if (!currentQuestion) return <Background />
+
+    const {
+      question,
+      correctAnswer
+    } = currentQuestion
 
     return isGameFinished
       ? (
@@ -168,12 +204,6 @@ class Game extends Component {
         </div>
       )
   }
-}
-
-Game.propTypes = {
-  appSettings: PropTypes.object,
-  history: PropTypes.object,
-  resetGame: PropTypes.func
 }
 
 export default Game

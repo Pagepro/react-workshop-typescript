@@ -8,13 +8,15 @@ import Home from './Home'
 import Setup from './Setup'
 import Game from './Game'
 
-type IProps = {}
-
-interface IState {
+export interface IAppSettings {
   nick: string
   difficulty: string | null
   gameStarted: boolean
 }
+
+type IProps = {}
+
+type IState = IAppSettings
 
 const defaultState: IState = {
   nick: '',
