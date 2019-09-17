@@ -1,11 +1,23 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {
   sample
 } from 'lodash'
+import { IAnswer } from './Game'
 
-class LifeLines extends React.Component {
-  constructor (props) {
+interface IProps {
+  correctAnswer: string
+  setCurrentQuestionAnswers: (answers: IAnswer[]) => void
+  answers: IAnswer[]
+}
+
+interface IState {
+  callFriendUsed: boolean
+  spectatorsUsed: boolean
+  halfOnHalfUsed: boolean
+}
+
+class LifeLines extends React.Component<IProps, IState> {
+  constructor (props: IProps) {
     super(props)
 
     this.state = {
@@ -46,7 +58,9 @@ class LifeLines extends React.Component {
         .filter(answer => answer.text !== correctAnswer)
       )
 
-    const filteredAnswers = answers.reduce((result, answer) => {
+    if (!leftoverIncorrectAnswer) return
+
+    const filteredAnswers = answers.reduce((result: IAnswer[], answer: IAnswer) => {
       if (answer.text !== leftoverIncorrectAnswer.text && answer.text !== correctAnswer) {
         answer.disabled = true
       }
@@ -94,14 +108,6 @@ class LifeLines extends React.Component {
       </div>
     )
   }
-}
-
-LifeLines.propTypes = {
-  correctAnswer: PropTypes.string,
-  setCurrentQuestionAnswers: PropTypes.func,
-  answers: PropTypes.array,
-  currentQuestionNumber: PropTypes.number,
-  onChange: PropTypes.func
 }
 
 export default LifeLines
