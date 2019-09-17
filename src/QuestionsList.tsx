@@ -1,25 +1,28 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { questionsList } from './helpers.js'
+import { rewardsList, IReward } from './helpers'
 
-class QuestionsList extends React.Component {
-  constructor (props) {
+interface IProps {
+  currentQuestionNumber: number
+}
+
+class QuestionsList extends React.Component<IProps> {
+  constructor (props: IProps) {
     super(props)
 
     this.renderQuestion = this.renderQuestion.bind(this)
   }
 
-  renderQuestion (item, index) {
+  renderQuestion (item: IReward, index: number) {
     const { currentQuestionNumber } = this.props
     const {
       price,
       isGuaranteed
     } = item
 
-    const isCurrent = currentQuestionNumber === (questionsList.length - 1 - index)
-    const isAnswered = currentQuestionNumber > (questionsList.length - 1 - index)
+    const isCurrent = currentQuestionNumber === (rewardsList.length - 1 - index)
+    const isAnswered = currentQuestionNumber > (rewardsList.length - 1 - index)
     const itemClass = `c-status__item${isCurrent ? ' is-active' : ''}${isGuaranteed ? ' is-special' : ''}${isAnswered ? ' is-done' : ''}`
-    const questionNumber = questionsList.length - index
+    const questionNumber = rewardsList.length - index
 
     return (
       <li
@@ -39,14 +42,10 @@ class QuestionsList extends React.Component {
   render () {
     return (
       <ul className='c-status'>
-        {questionsList.map(this.renderQuestion)}
+        {rewardsList.map(this.renderQuestion)}
       </ul>
     )
   }
-}
-
-QuestionsList.propTypes = {
-  currentQuestionNumber: PropTypes.number
 }
 
 export default QuestionsList

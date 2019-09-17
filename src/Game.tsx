@@ -2,7 +2,7 @@ import React from 'react'
 import { History } from 'history'
 import { shuffle } from 'lodash'
 import {
-  fetchQuestions
+  fetchQuestions, IQuestion
 } from './helpers'
 import Questions from './Questions'
 import Background from './Background'
@@ -10,16 +10,9 @@ import SidePanel from './SidePanel'
 import EndScreen from './EndScreen'
 import { IAppSettings } from './App'
 
-// Types for question and answer here for now
 interface IAnswer {
   text: string
   disabled: boolean
-}
-
-interface IQuestion {
-  question: string
-  correctAnswer: string
-  incorrectAnswers: string[]
 }
 
 interface IProps {
@@ -84,8 +77,12 @@ class Game extends React.Component<IProps, IState> {
   }
 
   fetchQuestions () {
-    fetchQuestions(this.props.appSettings.difficulty)
-      .then(questions => {
+    const { difficulty } = this.props.appSettings
+
+    if (!difficulty) return
+
+    fetchQuestions(difficulty)
+      .then((questions: IQuestion[]) => {
         this.setState({
           questions
         }, this.generateQuestion)
